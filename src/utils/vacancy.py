@@ -1,3 +1,6 @@
+from src.utils.error import TypeErr
+
+
 class Vacancy:
     name: str
     link: str
@@ -22,7 +25,7 @@ class Vacancy:
         elif isinstance(other, (int, float)):
             return self.salary > other
         else:
-            raise TypeError(f"Can't compare objects of {type(self)} and {type(other)}")
+            raise TypeErr(type(self), type(other))
 
     def __lt__(self, other):
         if isinstance(other, Vacancy):
@@ -30,7 +33,7 @@ class Vacancy:
         elif isinstance(other, (int, float)):
             return self.salary < other
         else:
-            raise TypeError(f"Can't compare objects of {type(self)} and {type(other)}")
+            raise TypeErr(type(self), type(other))
 
     def __eq__(self, other):
         if isinstance(other, Vacancy):
@@ -38,5 +41,7 @@ class Vacancy:
         elif isinstance(other, (int, float)):
             return self.salary == other
         else:
-            raise TypeError(f"Can't compare objects of {type(self)} and {type(other)}")
+            raise TypeErr(type(self), type(other))
 
+    def __str__(self):
+        return f"{self.name}, {self.description[:10]}..., {self.salary}, {self.link}, {self.requirements[:10]}..."
