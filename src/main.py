@@ -7,4 +7,4 @@ from utils.vacancy import Vacancy
 # print(vac)
 
 hhapi = HeadHunter()
-hhapi.get_vacancies(salary=100000, text='таролог')
+hhapi.get_vacancies(text='python')

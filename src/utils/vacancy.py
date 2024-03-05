@@ -3,21 +3,21 @@ from src.utils.error import TypeErr
 
 class Vacancy:
     name: str
-    link: str
+    town: str
     salary: int
     description: str
     requirements: str
 
-    def __init__(self, name, link, salary, description, requirements):
+    def __init__(self, name, town, salary, description, requirements):
         self.name = name
-        self.link = link
+        self.town = town
         self.salary = salary if salary > 0 else None
         self.description = description
         self.requirements = requirements
 
     @classmethod
-    def create(cls, name, link, salary, description, requirements):
-        return cls(name, link, salary, description, requirements)
+    def create(cls, name, town, salary, description, requirements):
+        return cls(name, town, salary, description, requirements)
 
     def __gt__(self, other):
         if isinstance(other, Vacancy):
@@ -44,4 +44,4 @@ class Vacancy:
             raise TypeErr(type(self), type(other))
 
     def __str__(self):
-        return f"{self.name}, {self.description[:10]}..., {self.salary}, {self.link}, {self.requirements[:10]}..."
+        return f"{self.name}, {self.description[:10]}..., {self.salary}, {self.town}, {self.requirements[:10]}..."

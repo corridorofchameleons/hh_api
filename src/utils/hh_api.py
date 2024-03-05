@@ -45,11 +45,46 @@ class HeadHunter(HhABC):
         url = self.__url + '?'
         for k, v in kwargs.items():
             url += f'{k}={v}&'
-        return url
+        return url + 'per_page=10'
 
     def __write_vacancies(self, data):
         '''
         Записывает данные в файл
         '''
+        result = self.__fetch_attributes(data)
         with open(self.__file, 'w', encoding='utf8') as f:
-            json.dump(data, f, ensure_ascii=False)
+            json.dump(result, f, ensure_ascii=False)
+
+    def __fetch_attributes(self, data):
+        '''
+        Извлекает данные вакансии в соответствии со структурой класса Vacancy
+        '''
+        result = []
+
+        for item in data.get('items'):
+            name = item.get('name')
+
+            try:
+                town = item.get('area').get('name')
+            except AttributeError:
+                town = None
+
+            try:
+                salary = item.get('salary').get('from')
+            except AttributeError:
+                salary = 0
+
+            try:
+                description = item.get('snippet').get('responsibility')
+            except AttributeError:
+                description = None
+
+            try:
+                requirements = item.get('snippet').get('requirements')
+            except AttributeError:
+                requirements = None
+
+            result.append({'name': name, 'town': town, 'salary': salary, 'description': description,
+                           'requirements': requirements})
+
+        return result
