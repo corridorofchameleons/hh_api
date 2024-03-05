@@ -3,8 +3,7 @@ import requests
 
 from abc import ABC, abstractmethod
 
-URL = 'https://api.hh.ru/vacancies'
-FILE = 'data/vacancies.json'
+from src.settings import URL, FILE
 
 
 class HhABC(ABC):
@@ -55,7 +54,8 @@ class HeadHunter(HhABC):
         with open(self.__file, 'w', encoding='utf8') as f:
             json.dump(result, f, ensure_ascii=False)
 
-    def __fetch_attributes(self, data):
+    @staticmethod
+    def __fetch_attributes(data):
         '''
         Извлекает данные вакансии в соответствии со структурой класса Vacancy
         '''
