@@ -34,14 +34,15 @@ class JsonManager(JSONABC):
     '''
     Класс для работы с JSON
     '''
-    def __init__(self):
-        pass
+    def __init__(self, file=FILE):
+        self.__file = file
 
-    @staticmethod
-    def __read_json(file=FILE) -> list[dict]:
+    def __read_json(self, file=None) -> list[dict]:
         '''
         Получает данные из файла
         '''
+        file = file if file else self.__file
+
         with open(file, encoding='utf8') as f:
             try:
                 data = json.load(f)
@@ -49,11 +50,12 @@ class JsonManager(JSONABC):
                 data = []
         return data
 
-    @staticmethod
-    def __write_json(data: list[dict], file=FILE) -> None:
+    def __write_json(self, data: list[dict], file=None) -> None:
         '''
         Записывает данные в файл
         '''
+        file = file if file else self.__file
+
         with open(file, 'w', encoding='utf8') as f:
             json.dump(data, f, ensure_ascii=False)
 
