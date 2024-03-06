@@ -8,10 +8,10 @@ class Vacancy:
     description: str
     requirements: str
 
-    def __init__(self, name: str, town: str, salary: int | float, description: str, requirements: str):
+    def __init__(self, name: str, town: str, salary: int, description: str, requirements: str):
         self.name = name
         self.town = town
-        self.salary = salary if salary and salary > 0 else 0
+        self.salary = salary if isinstance(salary, int | float) and salary > 0 else 0
         self.description = description
         self.requirements = requirements
 
