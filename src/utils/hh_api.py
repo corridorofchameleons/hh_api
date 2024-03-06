@@ -2,7 +2,7 @@ import requests
 
 from abc import ABC, abstractmethod
 from src.utils.vacancy import Vacancy
-from src.settings import URL, FILE
+from src.settings import URL
 
 
 class HhABC(ABC):
@@ -26,9 +26,8 @@ class HeadHunter(HhABC):
     '''
     __slots__ = ['__url', '__file']
 
-    def __init__(self, url=URL, file=FILE):
+    def __init__(self, url=URL):
         self.__url = url
-        self.__file = file
 
     def __modify_url(self, kwargs: dict) -> str:
         '''
