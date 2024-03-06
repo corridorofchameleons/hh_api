@@ -11,7 +11,7 @@ class Vacancy:
     def __init__(self, name, town, salary, description, requirements):
         self.name = name
         self.town = town
-        self.salary = salary if salary and salary > 0 else None
+        self.salary = salary if salary and salary > 0 else 0
         self.description = description
         self.requirements = requirements
 

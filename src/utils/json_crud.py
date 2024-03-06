@@ -25,6 +25,10 @@ class JSONABC(ABC):
     def delete(self, name):
         raise NotImplementedError
 
+    @abstractmethod
+    def top_salary(self, vacancies, num):
+        raise NotImplementedError
+
 
 class JsonManager(JSONABC):
     def __init__(self):
@@ -67,7 +71,7 @@ class JsonManager(JSONABC):
             records.append(new)
 
         self.__write_json(records)
-        print('Вакансии успешно добавлены\n')
+        print('Вакансии успешно добавлены')
 
     def search(self, **kwargs) -> list[Vacancy]:
         '''
@@ -100,7 +104,7 @@ class JsonManager(JSONABC):
                     vacancy[k] = v
 
         self.__write_json(vacancies)
-        print('Вакансия обновлена\n')
+        print('Вакансия обновлена')
 
     def delete(self, name):
         vacancies = self.__read_json()
@@ -112,4 +116,10 @@ class JsonManager(JSONABC):
                     vacancies.remove(vacancy)
 
         self.__write_json(vacancies)
-        print('Вакансия удалена\n')
+        print('Вакансия удалена')
+
+    def top_salary(self, vacancies: list[Vacancy], num: int = None) -> list[Vacancy]:
+        if not num:
+            num = len(vacancies)
+
+        return sorted(vacancies, reverse=True)[:num]
