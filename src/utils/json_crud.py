@@ -10,11 +10,15 @@ class JSONABC(ABC):
     Абстрактный класс для реализации CRUD
     '''
     @abstractmethod
-    def add(self, vacancy):
+    def create_table(self):
         raise NotImplementedError
 
     @abstractmethod
-    def search(self, **kwargs):
+    def insert(self, vacancy):
+        raise NotImplementedError
+
+    @abstractmethod
+    def select(self, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
@@ -25,12 +29,11 @@ class JSONABC(ABC):
     def delete(self, name):
         raise NotImplementedError
 
-    @abstractmethod
-    def top_salary(self, vacancies, num):
-        raise NotImplementedError
-
 
 class JsonManager(JSONABC):
+    '''
+    Класс для работы с JSON
+    '''
     def __init__(self):
         pass
 
@@ -63,7 +66,10 @@ class JsonManager(JSONABC):
                               item.get('salary'), item.get('description'),
                               item.get('requirements'))
 
-    def add(self, vacancies: Vacancy | list[Vacancy]) -> None:
+    def create_table(self):
+        pass
+
+    def insert(self, vacancies: Vacancy | list[Vacancy]) -> None:
         '''
         Добавляет вакансию (список вакансий) в файл
         '''
@@ -86,7 +92,7 @@ class JsonManager(JSONABC):
         self.__write_json(records)
         print('Вакансии успешно добавлены')
 
-    def search(self, **kwargs) -> list[Vacancy]:
+    def select(self, **kwargs) -> list[Vacancy]:
         '''
         Возвращает список вакансий, удовлетворяющих заданным требованиям
         '''
