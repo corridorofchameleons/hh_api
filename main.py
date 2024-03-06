@@ -8,9 +8,14 @@ from src.utils.vacancy import Vacancy
 # print(vac)
 
 hhapi = HeadHunter()
-hhapi.get_vacancies(text='python')
+hhapi.get_vacancies(text='таролог')
 
 vacancy = Vacancy('1', '2', 50, '', '')
 
 j = JsonManager()
+
 j.add(vacancy)
+j.update('1', salary=150000)
+print(j.search(name='1', salary=1))
+j.delete('1')
+print(j.search(name='1'))

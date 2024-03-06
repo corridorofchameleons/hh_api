@@ -14,11 +14,11 @@ class JSONABC(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def find(self, **kwargs):
+    def search(self, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
-    def update(self):
+    def update(self, name, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
@@ -34,13 +34,21 @@ class JsonManager(JSONABC):
     def __read_json(file=FILE):
         with open(file, 'r', encoding='utf8') as f:
             data = json.load(f)
-            print(data)
         return data
 
     @staticmethod
     def __write_json(data, file=FILE):
         with open(file, 'w', encoding='utf8') as f:
             json.dump(data, f, ensure_ascii=False)
+
+    @staticmethod
+    def __search_target(name: str, vacancies: list[dict]) -> dict:
+        target = None
+        for vacancy in vacancies:
+            if vacancy.get('name') == name:
+                target = vacancy
+                del vacancy
+        return target
 
     def add(self, vacancy: Vacancy) -> None:
         vacancies = self.__read_json()
@@ -55,12 +63,42 @@ class JsonManager(JSONABC):
 
         self.__write_json(vacancies)
 
-    def find(self, name: str | None = None, town: str | None = None,
-             salary: int | float | None = None, query: str | None = None) -> list[dict]:
-        pass
+    def search(self, **kwargs) -> list[dict]:
+        '''
+        Возвращает список вакансий, удовлетворяющих заданным требованиям
+        '''
+        result = []
+        vacancies = self.__read_json()
 
-    def update(self):
-        pass
+        for vacancy in vacancies:
+            suitable = True
+            for param, value in kwargs.items():
 
-    def delete(self, query):
-        pass
+                if param == 'salary' and int(value) > int(vacancy.get('salary')):
+                    suitable = False
+                if param != 'salary' and value not in vacancy.get(param).lower():
+                    suitable = False
+            if suitable:
+                result.append(vacancy)
+
+        return result
+
+    def update(self, name: str, **kwargs) -> None:
+        '''
+        Обновляет данные вакансии
+        '''
+        vacancies = self.__read_json()
+        for vacancy in vacancies:
+            if vacancy.get('name') == name:
+                for k, v in kwargs.items():
+                    vacancy[k] = v
+
+        self.__write_json(vacancies)
+
+    def delete(self, name):
+        vacancies = self.__read_json()
+        for vacancy in vacancies:
+            if vacancy.get('name') == name:
+                vacancies.remove(vacancy)
+        print(vacancies)
+        self.__write_json(vacancies)

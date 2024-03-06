@@ -44,7 +44,7 @@ class HeadHunter(HhABC):
         url = self.__url + '?'
         for k, v in kwargs.items():
             url += f'{k}={v}&'
-        return url + 'per_page=10'
+        return url + 'per_page=1'
 
     def __write_vacancies(self, data):
         '''
