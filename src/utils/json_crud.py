@@ -35,7 +35,10 @@ class JsonManager(JSONABC):
         pass
 
     @staticmethod
-    def __read_json(file=FILE):
+    def __read_json(file=FILE) -> list[dict]:
+        '''
+        Получает данные из файла
+        '''
         with open(file, encoding='utf8') as f:
             try:
                 data = json.load(f)
@@ -44,19 +47,29 @@ class JsonManager(JSONABC):
         return data
 
     @staticmethod
-    def __write_json(data, file=FILE):
+    def __write_json(data: list[dict], file=FILE) -> None:
+        '''
+        Записывает данные в файл
+        '''
         with open(file, 'w', encoding='utf8') as f:
             json.dump(data, f, ensure_ascii=False)
 
     @staticmethod
     def __from_dict_to_vacancy(item: dict) -> Vacancy:
+        '''
+        Преобразует объект dict в объект Vacancy
+        '''
         return Vacancy.create(item.get('name'), item.get('town'),
                               item.get('salary'), item.get('description'),
                               item.get('requirements'))
 
     def add(self, vacancies: Vacancy | list[Vacancy]) -> None:
+        '''
+        Добавляет вакансию (список вакансий) в файл
+        '''
         if isinstance(vacancies, Vacancy):
             vacancies = [vacancies]
+
         records = self.__read_json()
         if not records:
             records = []
@@ -107,6 +120,9 @@ class JsonManager(JSONABC):
         print('Вакансия обновлена')
 
     def delete(self, name):
+        '''
+        Удаляет из файла вакансию с заданным названием
+        '''
         vacancies = self.__read_json()
         if name == 'all':
             vacancies = []
@@ -119,6 +135,9 @@ class JsonManager(JSONABC):
         print('Вакансия удалена')
 
     def top_salary(self, vacancies: list[Vacancy], num: int = None) -> list[Vacancy]:
+        '''
+        Возвращает топ вакансий по зарплате
+        '''
         if not num:
             num = len(vacancies)
 

@@ -17,7 +17,19 @@ class Vacancy:
 
     @classmethod
     def create(cls, name, town, salary, description, requirements):
+        '''
+        Создает экземпляр класса
+        '''
         return cls(name, town, salary, description, requirements)
+
+    def __str__(self):
+        return (f"Вакансия: {self.name}\n"
+                f"Город: {self.town}\n"
+                f"Зарплата: {self.salary}\n"
+                f"Описание: {'' if not self.description else self.description[:20] + '...'}\n"
+                f"Требования: {'' if not self.requirements else self.requirements[:20] + '...'}\n")
+
+    # 3 магических метода ниже необходимы для сортировки вакансий по зарплате
 
     def __gt__(self, other):
         if isinstance(other, Vacancy):
@@ -42,10 +54,3 @@ class Vacancy:
             return self.salary == other
         else:
             raise TypeErr(type(self), type(other))
-
-    def __str__(self):
-        return (f"Вакансия: {self.name}\n"
-                f"Город: {self.town}\n"
-                f"Зарплата: {self.salary}\n"
-                f"Описание: {'' if not self.description else self.description[:20] + '...'}\n"
-                f"Требования: {'' if not self.requirements else self.requirements[:20] + '...'}\n")

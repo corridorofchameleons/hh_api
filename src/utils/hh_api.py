@@ -20,7 +20,8 @@ class HeadHunter(HhABC):
 
     def get_vacancies(self, **kwargs) -> list[Vacancy]:
         '''
-        Получает вакансии в соответствии с запросом и записывает данные в файл
+        Получает вакансии в соответствии с запросом
+        Возвращает список объектов Vacancy
         '''
         result = []
         if kwargs:
