@@ -105,7 +105,7 @@ class JsonManager(JSONABC):
 
                 if param == 'salary' and int(value) > int(vacancy.get('salary')):
                     suitable = False
-                if param != 'salary' and value not in vacancy.get(param).lower():
+                if param != 'salary' and value.lower() not in vacancy.get(param).lower():
                     suitable = False
             if suitable:
                 result.append(self.__from_dict_to_vacancy(vacancy))

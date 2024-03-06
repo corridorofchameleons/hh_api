@@ -1,17 +1,35 @@
-from src.utils.hh_api import HeadHunter
-from src.utils.json_crud import JsonManager
-from src.utils.vacancy import Vacancy
+from src.funcs.db_manipulations import add_vacancy, get_vacancies
+from src.funcs.vacancies_queries import select_vacancies, top_vacancies, delete_vacancy, update_vacancy
 
 
-hhapi = HeadHunter()
-jsonmgr = JsonManager()
-jsonmgr.delete('all')
-vacs = hhapi.get(text='разработчик', per_page=20, area=3)
-jsonmgr.insert(vacs)
-vacs = jsonmgr.select()
-vacs = jsonmgr.top_salary(vacs, 5)
+def main():
 
-for vac in vacs:
-    print(vac)
+    while True:
+        print()
+        ans = input('1 - Загрузить вакансии\n2 - Добавить вакансию\n3 - Изменить вакансию\n'
+                    '4 - Удалить вакансию\n5 - Поиск по вакансиям\n6 - Топ вакансий\n7 - Выход\n')
+        match ans:
+            case '1':
+                get_vacancies()
+            case '2':
+                add_vacancy()
+            case '3':
+                update_vacancy()
+            case '4':
+                delete_vacancy()
+            case '5':
+                vacancies = select_vacancies()
+                for vac in vacancies:
+                    print(vac)
+            case '6':
+                vacancies = top_vacancies()
+                for vac in vacancies:
+                    print(vac)
+            case '7':
+                break
+            case _:
+                continue
 
 
+if __name__ == '__main__':
+    main()
