@@ -1,4 +1,3 @@
-import json
 import requests
 
 from abc import ABC, abstractmethod
@@ -34,11 +33,11 @@ class HeadHunter(HhABC):
                     vacancy = self.__create_vacancy(item)
                     result.append(vacancy)
             except AttributeError as err:
-                print(f'An error occurred: {err}')
+                print(f'An error occurred: {err}\n')
             else:
-                print('Fetch successful')
+                print('Вакансии получены\n')
         else:
-            print(f'{self.__url}: Query parameters error')
+            print(f'{self.__url}: Query parameters error\n')
 
         return result
 

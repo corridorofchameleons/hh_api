@@ -44,4 +44,8 @@ class Vacancy:
             raise TypeErr(type(self), type(other))
 
     def __str__(self):
-        return f"{self.name}, {self.description[:10]}..., {self.salary}, {self.town}, {self.requirements[:10]}..."
+        return (f"Вакансия: {self.name}\n"
+                f"Город: {self.town}\n"
+                f"Зарплата: {self.salary}\n"
+                f"Описание: {'' if not self.description else self.description[:20] + '...'}\n"
+                f"Требования: {'' if not self.requirements else self.requirements[:20] + '...'}\n")

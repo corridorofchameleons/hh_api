@@ -44,6 +44,12 @@ class JsonManager(JSONABC):
         with open(file, 'w', encoding='utf8') as f:
             json.dump(data, f, ensure_ascii=False)
 
+    @staticmethod
+    def __from_dict_to_vacancy(item: dict) -> Vacancy:
+        return Vacancy.create(item.get('name'), item.get('town'),
+                              item.get('salary'), item.get('description'),
+                              item.get('requirements'))
+
     def add(self, vacancies: Vacancy | list[Vacancy]) -> None:
         if isinstance(vacancies, Vacancy):
             vacancies = [vacancies]
@@ -61,8 +67,9 @@ class JsonManager(JSONABC):
             records.append(new)
 
         self.__write_json(records)
+        print('Вакансии успешно добавлены\n')
 
-    def search(self, **kwargs) -> list[dict]:
+    def search(self, **kwargs) -> list[Vacancy]:
         '''
         Возвращает список вакансий, удовлетворяющих заданным требованиям
         '''
@@ -78,7 +85,7 @@ class JsonManager(JSONABC):
                 if param != 'salary' and value not in vacancy.get(param).lower():
                     suitable = False
             if suitable:
-                result.append(vacancy)
+                result.append(self.__from_dict_to_vacancy(vacancy))
 
         return result
 
@@ -93,14 +100,16 @@ class JsonManager(JSONABC):
                     vacancy[k] = v
 
         self.__write_json(vacancies)
+        print('Вакансия обновлена\n')
 
     def delete(self, name):
         vacancies = self.__read_json()
         if name == 'all':
-            vacancies = None
+            vacancies = []
         else:
             for vacancy in vacancies:
                 if vacancy.get('name') == name:
                     vacancies.remove(vacancy)
 
         self.__write_json(vacancies)
+        print('Вакансия удалена\n')

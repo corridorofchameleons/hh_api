@@ -6,10 +6,10 @@ from src.utils.vacancy import Vacancy
 hhapi = HeadHunter()
 jsonmgr = JsonManager()
 jsonmgr.delete('all')
-vacs = hhapi.get_vacancies(text='таролог', per_page=100)
-print(len(vacs))
+vacs = hhapi.get_vacancies(text='таролог', per_page=5, location='москва')
 jsonmgr.add(vacs)
-jsonmgr.add(Vacancy.create('1', '2', 10000, '', ''))
-jsonmgr.delete('1')
-print(len(jsonmgr.search()))
+vacs = jsonmgr.search()
+for vac in vacs:
+    print(vac)
+
 
