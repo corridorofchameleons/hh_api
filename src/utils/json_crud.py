@@ -22,7 +22,7 @@ class JSONABC(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def delete(self, query):
+    def delete(self, name):
         raise NotImplementedError
 
 
@@ -32,8 +32,11 @@ class JsonManager(JSONABC):
 
     @staticmethod
     def __read_json(file=FILE):
-        with open(file, 'r', encoding='utf8') as f:
-            data = json.load(f)
+        with open(file, encoding='utf8') as f:
+            try:
+                data = json.load(f)
+            except json.decoder.JSONDecodeError:
+                data = []
         return data
 
     @staticmethod
@@ -41,27 +44,23 @@ class JsonManager(JSONABC):
         with open(file, 'w', encoding='utf8') as f:
             json.dump(data, f, ensure_ascii=False)
 
-    @staticmethod
-    def __search_target(name: str, vacancies: list[dict]) -> dict:
-        target = None
+    def add(self, vacancies: Vacancy | list[Vacancy]) -> None:
+        if isinstance(vacancies, Vacancy):
+            vacancies = [vacancies]
+        records = self.__read_json()
+        if not records:
+            records = []
+
         for vacancy in vacancies:
-            if vacancy.get('name') == name:
-                target = vacancy
-                del vacancy
-        return target
+            new = {'name': vacancy.name,
+                   'town': vacancy.town,
+                   'salary': vacancy.salary,
+                   'description': vacancy.description,
+                   'requirements': vacancy.requirements
+                   }
+            records.append(new)
 
-    def add(self, vacancy: Vacancy) -> None:
-        vacancies = self.__read_json()
-
-        new = {'name': vacancy.name,
-               'town': vacancy.town,
-               'salary': vacancy.salary,
-               'description': vacancy.description,
-               'requirements': vacancy.requirements
-               }
-        vacancies.append(new)
-
-        self.__write_json(vacancies)
+        self.__write_json(records)
 
     def search(self, **kwargs) -> list[dict]:
         '''
@@ -97,8 +96,11 @@ class JsonManager(JSONABC):
 
     def delete(self, name):
         vacancies = self.__read_json()
-        for vacancy in vacancies:
-            if vacancy.get('name') == name:
-                vacancies.remove(vacancy)
-        print(vacancies)
+        if name == 'all':
+            vacancies = None
+        else:
+            for vacancy in vacancies:
+                if vacancy.get('name') == name:
+                    vacancies.remove(vacancy)
+
         self.__write_json(vacancies)

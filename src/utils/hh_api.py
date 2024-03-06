@@ -2,7 +2,7 @@ import json
 import requests
 
 from abc import ABC, abstractmethod
-
+from src.utils.vacancy import Vacancy
 from src.settings import URL, FILE
 
 
@@ -19,17 +19,20 @@ class HeadHunter(HhABC):
         self.__url = url
         self.__file = file
 
-    def get_vacancies(self, **kwargs) -> None:
+    def get_vacancies(self, **kwargs) -> list[Vacancy]:
         '''
         Получает вакансии в соответствии с запросом и записывает данные в файл
         '''
+        result = []
         if kwargs:
             self.__url = self.__modify_url(kwargs)
 
         data = requests.get(self.__url)
         if data.status_code == 200:
             try:
-                self.__write_vacancies(data.json())
+                for item in data.json().get('items'):
+                    vacancy = self.__create_vacancy(item)
+                    result.append(vacancy)
             except AttributeError as err:
                 print(f'An error occurred: {err}')
             else:
@@ -37,54 +40,48 @@ class HeadHunter(HhABC):
         else:
             print(f'{self.__url}: Query parameters error')
 
+        return result
+
     def __modify_url(self, kwargs: dict) -> str:
         '''
         Добавляет параметры в запрос
         '''
         url = self.__url + '?'
         for k, v in kwargs.items():
+            if k == 'per_page' and v > 50:
+                v = 50
             url += f'{k}={v}&'
-        return url + 'per_page=1'
-
-    def __write_vacancies(self, data):
-        '''
-        Записывает данные в файл
-        '''
-        result = self.__fetch_attributes(data)
-        with open(self.__file, 'w', encoding='utf8') as f:
-            json.dump(result, f, ensure_ascii=False)
+        return url
 
     @staticmethod
-    def __fetch_attributes(data):
+    def __create_vacancy(item):
         '''
         Извлекает данные вакансии в соответствии со структурой класса Vacancy
+        Возвращает экземпляр класса Vacancy
         '''
-        result = []
 
-        for item in data.get('items'):
-            name = item.get('name')
+        name = item.get('name')
 
-            try:
-                town = item.get('area').get('name')
-            except AttributeError:
-                town = None
+        try:
+            town = item.get('area').get('name')
+        except AttributeError:
+            town = None
 
-            try:
-                salary = item.get('salary').get('from')
-            except AttributeError:
-                salary = 0
+        try:
+            salary = item.get('salary').get('from')
+        except AttributeError:
+            salary = 0
 
-            try:
-                description = item.get('snippet').get('responsibility')
-            except AttributeError:
-                description = None
+        try:
+            description = item.get('snippet').get('responsibility')
+        except AttributeError:
+            description = None
 
-            try:
-                requirements = item.get('snippet').get('requirements')
-            except AttributeError:
-                requirements = None
+        try:
+            requirements = item.get('snippet').get('requirements')
+        except AttributeError:
+            requirements = None
 
-            result.append({'name': name, 'town': town, 'salary': salary, 'description': description,
-                           'requirements': requirements})
+        vacancy = Vacancy.create(name, town, salary, description, requirements)
 
-        return result
+        return vacancy
